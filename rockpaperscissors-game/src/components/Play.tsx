@@ -1,17 +1,24 @@
-type Props = {
-  onClick: () => void;
+import { useGame } from '@/context/GameContext';
+
+type PlayProps = {
   disabled: boolean;
 };
 
-const Play = (props: Props) => {
+const Play = ({ disabled }: PlayProps) => {
+  const { startGame, isGameEnded } = useGame();
+
+  const handleGame = () => {
+    startGame();
+  };
+
   return (
     <button
       className='bg-[#161616] border-4 rounded-3xl py-2 px-8 border-yellow-500 
     text-white text-2xl font-medium uppercase'
-      onClick={props.onClick}
-      disabled={props.disabled}
+      onClick={handleGame}
+      disabled={disabled}
     >
-      Play
+      {isGameEnded ? 'Play Again' : 'Play'}
     </button>
   );
 };
