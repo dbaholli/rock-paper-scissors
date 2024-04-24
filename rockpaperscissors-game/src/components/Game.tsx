@@ -8,7 +8,6 @@ import GameInfo from '@/components/GameInfo';
 const Game = () => {
   const {
     placeBet,
-    winner,
     winAmount,
     betAmount,
     isGameStarted,
@@ -37,7 +36,6 @@ const Game = () => {
     <>
       <GameInfo
         isGameStarted={isGameStarted}
-        winner={winner}
         winAmount={winAmount}
         betAmount={betAmount}
         gameOutcome={gameOutcome}

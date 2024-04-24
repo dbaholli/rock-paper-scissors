@@ -2,7 +2,6 @@ import { GameChoice } from '@/types/enums';
 
 type GameInfoProps = {
   isGameStarted: boolean;
-  winner: string;
   winAmount: number;
   betAmount: number;
   gameOutcome: string;
@@ -12,7 +11,6 @@ type GameInfoProps = {
 
 const GameInfo = ({
   isGameStarted,
-  winner,
   winAmount,
   betAmount,
   gameOutcome,
@@ -30,9 +28,10 @@ const GameInfo = ({
             <h1 className='text-xl text-white font-bold text-center mt-10 uppercase'>
               {gameOutcome}
             </h1>
-            {winner && gameOutcome !== 'Tie' ? (
+            {!gameOutcome.includes(computerChoice!) && gameOutcome !== 'Tie' ? (
               <h1 className='text-xl text-white font-bold text-center mt-10 uppercase'>
-                YOU WON {winAmount} of your balance
+                YOU WON {winAmount} of your balance{' '}
+                <span className='text-3xl'> 🥳</span>
               </h1>
             ) : (
               <h1 className='text-xl text-white font-bold text-center mt-10 uppercase'>
