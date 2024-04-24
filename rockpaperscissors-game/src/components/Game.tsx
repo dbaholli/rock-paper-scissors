@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useGame } from '@/context/GameContext';
 import { GameChoice } from '@/types/enums';
+import { showToast } from '@/utils/showToast';
 import Play from '@/components/Play';
 import Position from '@/components/Position';
 import GameInfo from '@/components/GameInfo';
@@ -15,20 +16,24 @@ const Game = () => {
     computerChoice,
     playerPosition,
   } = useGame();
-  const [selectedPosition, setSelectedPosition] = useState<GameChoice | null>(
-    null
-  );
+  const [selectedPositions, setSelectedPositions] = useState<GameChoice[]>([]);
 
   const options = [GameChoice.Rock, GameChoice.Paper, GameChoice.Scissors];
 
   const handlePosition = (position: GameChoice) => {
-    placeBet(position);
-    setSelectedPosition(position);
+    if (selectedPositions.length < 2 || selectedPositions.includes(position)) {
+      placeBet(position);
+      if (!selectedPositions.includes(position)) {
+        setSelectedPositions((prevSelected) => [...prevSelected, position]);
+      }
+    } else {
+      showToast('Only 2 positions are allowed to bet on!!', 'error');
+    }
   };
 
   useEffect(() => {
-    if (!isGameStarted && selectedPosition !== null) {
-      setSelectedPosition(null);
+    if (!isGameStarted && selectedPositions.length > 0) {
+      setSelectedPositions([]);
     }
   }, [isGameStarted]);
 
@@ -49,7 +54,7 @@ const Game = () => {
             position={pos}
             key={pos}
             onClick={() => handlePosition(pos)}
-            selected={selectedPosition === pos}
+            selected={selectedPositions.includes(pos)}
           />
         ))}
       </div>
