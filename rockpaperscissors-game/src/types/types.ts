@@ -10,6 +10,7 @@ export type GameContextType = {
     computerChoice: GameChoice | null;
     gameOutcome: string;
     updateBalance: (amount: number) => void;
+    clearBetAmount: () => void;
     addFunds: (amount: number) => void;
     placeBet: (position: GameChoice) => void;
     startGame: () => void;

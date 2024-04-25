@@ -11,6 +11,7 @@ const Game = () => {
   const {
     placeBet,
     addFunds,
+    clearBetAmount,
     winAmount,
     betAmount,
     isGameStarted,
@@ -24,21 +25,35 @@ const Game = () => {
 
   const options = [GameChoice.Rock, GameChoice.Paper, GameChoice.Scissors];
 
-  const handlePosition = useCallback((position: GameChoice) => {
-    if (selectedPositions.length < 2 || selectedPositions.includes(position)) {
-      placeBet(position);
-      if (!selectedPositions.includes(position)) {
-        setSelectedPositions((prevSelected) => [...prevSelected, position]);
+  const handlePosition = useCallback(
+    (position: GameChoice) => {
+      if (
+        selectedPositions.length < 2 ||
+        selectedPositions.includes(position)
+      ) {
+        placeBet(position);
+        if (!selectedPositions.includes(position)) {
+          setSelectedPositions((prevSelected) => [...prevSelected, position]);
+        }
+      } else {
+        showToast('Only 2 positions are allowed to bet on!!', 'error');
       }
-    } else {
-      showToast('Only 2 positions are allowed to bet on!!', 'error');
-    }
-  }, [placeBet, selectedPositions]);
+    },
+    [placeBet, selectedPositions]
+  );
 
-  const handleAddFunds = useCallback((amount: number) => {
-    addFunds(amount);
-    setShowAddFundsModal(false);
-  }, [addFunds]);
+  const handleAddFunds = useCallback(
+    (amount: number) => {
+      addFunds(amount);
+      setShowAddFundsModal(false);
+    },
+    [addFunds]
+  );
+
+  const handleClear = () => {
+    clearBetAmount();
+    setSelectedPositions([]);
+  };
 
   useEffect(() => {
     if (!isGameStarted && selectedPositions.length > 0) {
@@ -51,7 +66,6 @@ const Game = () => {
       setShowAddFundsModal(true);
     }
   }, [balance]);
-
 
   return (
     <>
@@ -68,7 +82,7 @@ const Game = () => {
         betAmount={betAmount}
         gameOutcome={gameOutcome}
         computerChoice={computerChoice}
-        playerPosition={playerPosition}
+        playerPosition={selectedPositions}
       />
 
       <div className='flex justify-center gap-3'>
@@ -76,6 +90,7 @@ const Game = () => {
           <Position
             position={pos}
             betAmount={betAmount}
+            clearBetAmount={handleClear}
             key={pos}
             onClick={() => handlePosition(pos)}
             selected={selectedPositions.includes(pos)}

@@ -54,6 +54,14 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     updateBalance(-BET_AMOUNT);
   };
 
+  const clearBetAmount = () => {
+    if (betAmount > 0) {
+      setBetAmount(0);
+      setPlayerPosition(null);
+      updateBalance(betAmount);
+    }
+  };
+
   const addFunds = (amount: number) => {
     updateBalance(amount);
     setIsGameEnded(false);
@@ -158,6 +166,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
         isGameEnded,
         gameOutcome,
         updateBalance,
+        clearBetAmount,
         addFunds,
         placeBet,
         startGame,
