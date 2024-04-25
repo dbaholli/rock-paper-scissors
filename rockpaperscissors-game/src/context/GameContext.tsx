@@ -3,6 +3,7 @@ import { GameContext } from '@/context/ContextInstance';
 import { GameChoice } from '@/types/enums';
 import {
   BET_AMOUNT,
+  DOUBLE_POSITION_WINNER,
   WINNER,
   WINNING_RATE_DOUBLE,
   WINNING_RATE_SINGLE,
@@ -114,17 +115,20 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
       const { outcome, winnings } = determineWinner(playerChoice, compChoice);
       setGameOutcome(outcome);
       setWinAmount(winnings);
-      setTimeout(() => {
-        clearRound();
-      }, 1500);
     } else if (playerPosition.length === 2) {
       const [firstChoice, secondChoice] = playerPosition;
       if (firstChoice === compChoice && secondChoice === compChoice) {
         showToast("It's a tie!", 'info');
         setGameOutcome("It's a tie!");
-        setTimeout(() => {
-          clearRound();
-        }, 1500);
+      } else if (
+        DOUBLE_POSITION_WINNER[firstChoice]?.includes(compChoice) &&
+        DOUBLE_POSITION_WINNER[secondChoice]?.includes(compChoice)
+      ) {
+        const winnings = betAmount * WINNING_RATE_DOUBLE;
+        updateBalance(winnings);
+        showToast('You win both choices!', 'success');
+        setGameOutcome('You win both choices!');
+        setWinAmount(winnings);
       } else {
         const combinedChoice = `${firstChoice} and ${secondChoice}`;
         const { outcome, winnings } = determineWinner(
@@ -133,15 +137,12 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
         );
         setGameOutcome(outcome);
         setWinAmount(winnings);
-        setTimeout(() => {
-          clearRound();
-        }, 1500);
       }
     }
 
     setTimeout(() => {
       clearRound();
-    }, 1500);
+    }, 2000);
   };
 
   const clearRound = () => {
