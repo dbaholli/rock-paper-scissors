@@ -17,35 +17,31 @@ const GameInfo = ({
   computerChoice,
   playerPosition,
 }: GameInfoProps) => {
+  const won = !gameOutcome.includes(computerChoice!) && gameOutcome !== 'Tie';
+  const message = won
+    ? `YOU WON ${winAmount} 🥳`
+    : `YOU LOST ${betAmount} of your balance`;
+
+  if (!isGameStarted) {
+    return (
+      <h1 className='text-xl text-white font-bold text-center mt-10 uppercase'>
+        PICK YOUR POSITIONS
+      </h1>
+    );
+  }
+
   return (
-    <>
-      {isGameStarted ? (
-        <div className='flex flex-row border-1 border-red-500'>
-          <div className='flex flex-col items-center'>
-            <h1 className='text-4xl text-white font-bold text-center mt-10 uppercase'>
-              {computerChoice} vs {playerPosition}
-            </h1>
-            <h1 className='text-xl text-white font-bold text-center mt-10 uppercase'>
-              {gameOutcome}
-            </h1>
-            {!gameOutcome.includes(computerChoice!) && gameOutcome !== 'Tie' ? (
-              <h1 className='text-xl text-white font-bold text-center mt-10 uppercase'>
-                YOU WON {winAmount} of your balance{' '}
-                <span className='text-3xl'> 🥳</span>
-              </h1>
-            ) : (
-              <h1 className='text-xl text-white font-bold text-center mt-10 uppercase'>
-                YOU LOST {betAmount} of your balance
-              </h1>
-            )}
-          </div>
-        </div>
-      ) : (
-        <h1 className='text-xl text-white font-bold text-center mt-10 uppercase'>
-          PICK YOUR POSITION
-        </h1>
-      )}
-    </>
+    <div className='flex flex-col items-center border-1 border-red-500'>
+      <h1 className='text-4xl text-white font-bold text-center mt-10 uppercase'>
+        {computerChoice} vs {playerPosition && playerPosition.join(' and ')}
+      </h1>
+      <h1 className='text-xl text-white font-bold text-center mt-10 uppercase'>
+        {gameOutcome}
+      </h1>
+      <h1 className='text-xl text-white font-bold text-center mt-10 uppercase'>
+        {message}
+      </h1>
+    </div>
   );
 };
 
