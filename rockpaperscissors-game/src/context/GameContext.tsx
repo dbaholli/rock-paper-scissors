@@ -54,6 +54,11 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     updateBalance(-BET_AMOUNT);
   };
 
+  const addFunds = (amount: number) => {
+    updateBalance(amount);
+    setIsGameEnded(false);
+  };
+
   const generateComputerChoice = () => {
     const choices = [GameChoice.Rock, GameChoice.Paper, GameChoice.Scissors];
     const randomisedComputerChoice = Math.floor(Math.random() * choices.length);
@@ -101,11 +106,17 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
       const { outcome, winnings } = determineWinner(playerChoice, compChoice);
       setGameOutcome(outcome);
       setWinAmount(winnings);
+      setTimeout(() => {
+        clearRound();
+      }, 1500);
     } else if (playerPosition.length === 2) {
       const [firstChoice, secondChoice] = playerPosition;
       if (firstChoice === compChoice && secondChoice === compChoice) {
         showToast("It's a tie!", 'info');
         setGameOutcome("It's a tie!");
+        setTimeout(() => {
+          clearRound();
+        }, 1500);
       } else {
         const combinedChoice = `${firstChoice} and ${secondChoice}`;
         const { outcome, winnings } = determineWinner(
@@ -114,6 +125,9 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
         );
         setGameOutcome(outcome);
         setWinAmount(winnings);
+        setTimeout(() => {
+          clearRound();
+        }, 1500);
       }
     }
 
@@ -124,6 +138,8 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
 
   const clearRound = () => {
     setBetAmount(0);
+    setWinAmount(0);
+    setGameOutcome('');
     setPlayerPosition(null);
     setComputerChoice(null);
     setIsGameStarted(false);
@@ -142,6 +158,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
         isGameEnded,
         gameOutcome,
         updateBalance,
+        addFunds,
         placeBet,
         startGame,
         clearRound,

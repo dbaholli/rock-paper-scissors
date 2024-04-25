@@ -18,9 +18,10 @@ const GameInfo = ({
   playerPosition,
 }: GameInfoProps) => {
   const won = !gameOutcome.includes(computerChoice!) && gameOutcome !== 'Tie';
-  const message = won
+  const tie = gameOutcome === 'Tie';
+  const message = won 
     ? `YOU WON ${winAmount} 🥳`
-    : `YOU LOST ${betAmount} of your balance`;
+    : !tie ? `YOU LOST ${betAmount} of your balance` : '';
 
   if (!isGameStarted) {
     return (
