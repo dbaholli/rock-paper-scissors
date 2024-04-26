@@ -23,16 +23,16 @@ export const useGame = () => {
 };
 
 export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
-  const [balance, setBalance] = useState(5000);
-  const [betAmount, setBetAmount] = useState(0);
-  const [winAmount, setWinAmount] = useState(0);
+  const [balance, setBalance] = useState<number>(5000);
+  const [betAmount, setBetAmount] = useState<number>(0);
+  const [winAmount, setWinAmount] = useState<number>(0);
   const [playerPosition, setPlayerPosition] = useState<GameChoice[] | null>(
     null
   );
   const [computerChoice, setComputerChoice] = useState<GameChoice | null>(null);
   const [isGameStarted, setIsGameStarted] = useState(false);
   const [isGameEnded, setIsGameEnded] = useState(false);
-  const [gameOutcome, setGameOutcome] = useState('');
+  const [gameOutcome, setGameOutcome] = useState<string>('');
 
   const updateBalance = (amount: number) => {
     setBalance((prevBalance) => prevBalance + amount);
@@ -74,25 +74,58 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     return choices[randomisedComputerChoice];
   };
 
-  const determineWinner = (
-    playerChoice: GameChoice,
+  const determineGameOutcome = (
+    playerPosition: GameChoice[],
     compChoice: GameChoice
   ) => {
     let outcome = '';
     let winnings = 0;
-    if (playerChoice === compChoice) {
-      updateBalance(betAmount);
-      showToast("It's a tie!", 'info');
-      outcome = 'Tie';
-    } else if (WINNER[playerChoice]?.includes(compChoice)) {
-      winnings = betAmount * WINNING_RATE_SINGLE;
-      updateBalance(winnings);
-      showToast(`You win! ${playerChoice} beats ${compChoice}`, 'success');
-      outcome = `${playerChoice} WON!`;
-    } else {
-      showToast(`You lose! ${compChoice} beats ${playerChoice}`, 'error');
-      outcome = `${compChoice} WON!`;
+
+    if (playerPosition.length === 1) {
+      const playerChoice = playerPosition[0];
+      if (playerChoice === compChoice) {
+        updateBalance(betAmount);
+        showToast("It's a tie!", 'info');
+        outcome = 'Tie';
+      } else if (WINNER[playerChoice]?.includes(compChoice)) {
+        winnings = betAmount * WINNING_RATE_SINGLE;
+        updateBalance(winnings);
+        showToast(`You win! ${playerChoice} beats ${compChoice}`, 'success');
+        outcome = `${playerChoice} WON!`;
+      } else {
+        showToast(`You lose! ${compChoice} beats ${playerChoice}`, 'error');
+        outcome = `${compChoice} WON!`;
+      }
+    } else if (playerPosition.length === 2) {
+      const [firstChoice, secondChoice] = playerPosition;
+      if (firstChoice === compChoice && secondChoice === compChoice) {
+        showToast("It's a tie!", 'info');
+        outcome = "It's a tie!";
+      } else if (
+        DOUBLE_POSITION_WINNER[firstChoice]?.includes(compChoice) &&
+        DOUBLE_POSITION_WINNER[secondChoice]?.includes(compChoice)
+      ) {
+        winnings = betAmount * WINNING_RATE_DOUBLE;
+        updateBalance(winnings);
+        showToast('You win both choices!', 'success');
+        outcome = 'You win both choices!';
+      } else {
+        const combinedChoice = `${firstChoice} and ${secondChoice}`;
+        if (WINNER[combinedChoice as GameChoice]?.includes(compChoice)) {
+          winnings = betAmount * WINNING_RATE_SINGLE;
+          updateBalance(winnings);
+          showToast(
+            `You win! ${combinedChoice} beats ${compChoice}`,
+            'success'
+          );
+          outcome = `${combinedChoice} WON!`;
+        } else {
+          showToast(`You lose! ${compChoice} beats ${combinedChoice}`, 'error');
+          outcome = `${compChoice} WON!`;
+        }
+      }
     }
+
     return { outcome, winnings };
   };
 
@@ -101,7 +134,6 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
       showToast('Please place a bet first!', 'error');
       return;
     }
-
     setIsGameStarted(true);
     const compChoice = generateComputerChoice();
     setComputerChoice(compChoice);
@@ -110,39 +142,16 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
       return;
     }
 
-    if (playerPosition.length === 1) {
-      const playerChoice = playerPosition[0];
-      const { outcome, winnings } = determineWinner(playerChoice, compChoice);
-      setGameOutcome(outcome);
-      setWinAmount(winnings);
-    } else if (playerPosition.length === 2) {
-      const [firstChoice, secondChoice] = playerPosition;
-      if (firstChoice === compChoice && secondChoice === compChoice) {
-        showToast("It's a tie!", 'info');
-        setGameOutcome("It's a tie!");
-      } else if (
-        DOUBLE_POSITION_WINNER[firstChoice]?.includes(compChoice) &&
-        DOUBLE_POSITION_WINNER[secondChoice]?.includes(compChoice)
-      ) {
-        const winnings = betAmount * WINNING_RATE_DOUBLE;
-        updateBalance(winnings);
-        showToast('You win both choices!', 'success');
-        setGameOutcome('You win both choices!');
-        setWinAmount(winnings);
-      } else {
-        const combinedChoice = `${firstChoice} and ${secondChoice}`;
-        const { outcome, winnings } = determineWinner(
-          combinedChoice as GameChoice,
-          compChoice
-        );
-        setGameOutcome(outcome);
-        setWinAmount(winnings);
-      }
-    }
+    const { outcome, winnings } = determineGameOutcome(
+      playerPosition,
+      compChoice
+    );
+    setGameOutcome(outcome);
+    setWinAmount(winnings);
 
     setTimeout(() => {
       clearRound();
-    }, 2000);
+    }, 2500);
   };
 
   const clearRound = () => {

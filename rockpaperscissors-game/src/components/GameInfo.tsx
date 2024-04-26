@@ -47,7 +47,7 @@ const GameInfo = ({
   }
 
   return (
-    <div className={`flex flex-col items-center border-1 border-red-500 ${animationStarted ? 'animate-slide-in' : ''}`} data-testid="game-info">
+    <div className={`flex flex-col items-center w-full justify-center border-1 border-red-500 ${animationStarted ? 'animate-slide-in' : ''}`} data-testid="game-info">
       <h1 className='text-4xl text-white font-bold text-center mt-10 uppercase'>
         <span className={`border-4 px-4 py-2 rounded-full mr-5 ${computerColorClasses}`}>{computerChoice}</span> vs 
         <span className={`border-4 px-4 py-2 rounded-full ml-5 ${playerColorClasses}`}>{playerPosition && playerPosition.join(' and ')}</span>
