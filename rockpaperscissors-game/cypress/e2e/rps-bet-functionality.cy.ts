@@ -27,6 +27,18 @@ describe('Bet', () => {
   });
 })
 
+describe('Bet amount clear', () => {
+  it('places bet then clears all bet amount', () => {
+    cy.visit('http://localhost:5173/');
+    cy.contains('ROCK').click()
+    cy.contains('SCISSORS').click().click()
+
+    cy.contains('CLEAR BET').click();
+
+    cy.contains('BET: 0').should('exist');
+  });
+})
+
 describe('Game result', () => {
   it('places bet and shows game result', () => {
     cy.visit('http://localhost:5173/');
