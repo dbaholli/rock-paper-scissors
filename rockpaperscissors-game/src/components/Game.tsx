@@ -86,7 +86,7 @@ const Game = () => {
         playerPosition={selectedPositions}
       />
 
-      <div className='flex justify-center gap-3'>
+      <div className='flex justify-center gap-3 max-sm:flex-col gap-5'>
         {options.map((pos: GameChoice) => (
           <Position
             position={pos}

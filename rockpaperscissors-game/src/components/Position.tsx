@@ -22,7 +22,7 @@ const Position = ({
       className={`relative flex flex-col items-center rounded-md text-center justify-center border-4 py-12 px-24 cursor-pointer ${colorClasses} 
       w-[150px] transition-colors duration-300 ease-in-out hover:bg-opacity-80 hover:shadow-lg ${
         selected && positionBetAmount > 0 ? 'animate-pulse w-[175px] border-8' : ''
-      }`}
+      } max-sm: my-4`}
     >
       <p
         className={
