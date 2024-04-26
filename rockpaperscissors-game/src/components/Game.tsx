@@ -6,7 +6,7 @@ import Play from '@/components/Play';
 import Position from '@/components/Position';
 import GameInfo from '@/components/GameInfo';
 import AddFundsModal from '@/components/ui/AddFundsModal';
-import ClearBetButton from './ui/ClearBetButton';
+import ClearBetButton from '@/components/ui/ClearBetButton';
 
 const Game = () => {
   const {
