@@ -2,6 +2,7 @@ import { GameChoice } from '@/types/enums';
 
 export type GameContextType = {
     balance: number;
+    positionBetAmounts: { [key in GameChoice]?: number | undefined };
     betAmount: number;
     winAmount: number;
     isGameStarted: boolean;

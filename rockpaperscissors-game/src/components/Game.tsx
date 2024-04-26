@@ -6,6 +6,7 @@ import Play from '@/components/Play';
 import Position from '@/components/Position';
 import GameInfo from '@/components/GameInfo';
 import AddFundsModal from '@/components/ui/AddFundsModal';
+import ClearBetButton from './ui/ClearBetButton';
 
 const Game = () => {
   const {
@@ -13,6 +14,7 @@ const Game = () => {
     addFunds,
     clearBetAmount,
     winAmount,
+    positionBetAmounts,
     betAmount,
     isGameStarted,
     balance,
@@ -88,14 +90,14 @@ const Game = () => {
         {options.map((pos: GameChoice) => (
           <Position
             position={pos}
-            betAmount={betAmount}
-            clearBetAmount={handleClear}
+            positionBetAmount={positionBetAmounts[pos] || 0}
             key={pos}
             onClick={() => handlePosition(pos)}
             selected={selectedPositions.includes(pos)}
           />
         ))}
       </div>
+      {betAmount > 0 && <ClearBetButton clearBet={handleClear} />}
       <Play disabled={isGameStarted} />
     </>
   );

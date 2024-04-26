@@ -29,6 +29,9 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
   const [playerPosition, setPlayerPosition] = useState<GameChoice[] | null>(
     null
   );
+  const [positionBetAmounts, setPositionBetAmounts] = useState<{
+    [key in GameChoice]?: number;
+  }>({});
   const [computerChoice, setComputerChoice] = useState<GameChoice | null>(null);
   const [isGameStarted, setIsGameStarted] = useState(false);
   const [isGameEnded, setIsGameEnded] = useState(false);
@@ -45,6 +48,10 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
       }
       incrementBetAmount();
       showToast(`You placed a bet of ${BET_AMOUNT} on ${position}`, 'info');
+      setPositionBetAmounts((prevAmounts) => ({
+        ...prevAmounts,
+        [position]: (prevAmounts[position] || 0) + BET_AMOUNT,
+      }));
     } else {
       showToast('Insufficient balance!', 'error');
     }
@@ -59,6 +66,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
     if (betAmount > 0) {
       setBetAmount(0);
       setPlayerPosition(null);
+      setPositionBetAmounts({});
       updateBalance(betAmount);
     }
   };
@@ -157,6 +165,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
   const clearRound = () => {
     setBetAmount(0);
     setWinAmount(0);
+    setPositionBetAmounts({});
     setGameOutcome('');
     setPlayerPosition(null);
     setComputerChoice(null);
@@ -169,6 +178,7 @@ export const GameProvider: React.FC<GameProviderProps> = ({ children }) => {
       value={{
         balance,
         betAmount,
+        positionBetAmounts,
         winAmount,
         playerPosition,
         computerChoice,
