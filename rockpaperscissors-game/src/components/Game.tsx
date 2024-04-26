@@ -18,10 +18,9 @@ const Game = () => {
     balance,
     gameOutcome,
     computerChoice,
-    playerPosition,
   } = useGame();
   const [selectedPositions, setSelectedPositions] = useState<GameChoice[]>([]);
-  const [showAddFundsModal, setShowAddFundsModal] = useState(false);
+  const [showAddFundsModal, setShowAddFundsModal] = useState<boolean>(false);
 
   const options = [GameChoice.Rock, GameChoice.Paper, GameChoice.Scissors];
 
@@ -50,7 +49,7 @@ const Game = () => {
     [addFunds]
   );
 
-  const handleClear = () => {
+  const handleClear = (): void => {
     clearBetAmount();
     setSelectedPositions([]);
   };
@@ -86,7 +85,7 @@ const Game = () => {
       />
 
       <div className='flex justify-center gap-3'>
-        {options.map((pos) => (
+        {options.map((pos: GameChoice) => (
           <Position
             position={pos}
             betAmount={betAmount}
